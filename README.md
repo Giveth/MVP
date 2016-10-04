@@ -20,7 +20,7 @@ Once a Donor’s ether goes into the Vault, they then can direct their funds as 
 The first Campaign is the CharityDAO Campaign itself: This Campaign is special, it receives a transaction (but adjustable) fee from other Campaigns when the Vault transfers ether to maintain the CharityDAO’s code development and to discourage attack vectors.
 
 
-There is a limit of one Vault transfer a week per Campaign
+There is a limit of one Vault transfer a week per Campaign.
 
 #Design Specifications Post MVP (Subject to Dramatic Changes)
 
