@@ -30,7 +30,8 @@ contract SSToken is Owned {
         uint _parentSnapShot,
         string _tokenName,
         uint8 _decimalUnits,
-        string _tokenSymbol
+        string _tokenSymbol,
+        bool _isConstant
         ) {
         tokenFactory = SSTokenFactory(_tokenFactory);
         name = _tokenName;                                   // Set the name for display purposes
@@ -38,6 +39,7 @@ contract SSToken is Owned {
         symbol = _tokenSymbol;                              // Set the symbol for display purposes
         parentToken = SSToken(_parentToken);
         parentSnapShot = _parentSnapShot;
+        isConstant = _isConstant;
     }
 
     function transfer(address _to, uint256 _value) returns (bool success) {
@@ -49,6 +51,7 @@ contract SSToken is Owned {
         //same as above. Replace this line with the following if you want to protect against wrapping uints.
         //if (balances[_from] >= _value && allowed[_from][msg.sender] >= _value && balances[_to] + _value > balances[_to]) {
 
+        if (isConstant) throw;
         if (allowed[_from][msg.sender] < _value) return false;
         doTransfer(_from, _to, _value);
     }
@@ -58,6 +61,7 @@ contract SSToken is Owned {
     }
 
     function approve(address _spender, uint256 _value) returns (bool success) {
+        if (isConstant) throw;
         allowed[msg.sender][_spender] = _value;
         Approval(msg.sender, _spender, _value);
         return true;
@@ -69,6 +73,7 @@ contract SSToken is Owned {
 
     /* Approves and then calls the receiving contract */
     function approveAndCall(address _spender, uint256 _value, bytes _extraData) returns (bool success) {
+        if (isConstant) throw;
         allowed[msg.sender][_spender] = _value;
         Approval(msg.sender, _spender, _value);
 
@@ -96,6 +101,7 @@ contract SSToken is Owned {
     mapping (address => mapping (address => uint256)) allowed;
     uint public nSnapshots;
     mapping (uint => uint) public totalSupplyAt;
+    bool public isConstant;
 
 
     function balanceOfAt(address _holder, uint _snapshot) constant returns (uint) {
@@ -150,17 +156,19 @@ contract SSToken is Owned {
     }
 
     function createSnapshot() onlyOwner {
+        if (isConstant) throw;
         NewSnapshot(nSnapshots ++);
     }
 
-    function createChildToken(uint _snapshot, string _childTokenName, uint8 _childDecimalUnits, string _childTokenSymbol) onlyOwner {
-        if (_snapshot == nSnapshots) createSnapshot();
+    function createChildToken(uint _snapshot, string _childTokenName, uint8 _childDecimalUnits, string _childTokenSymbol, bool _isConstant) {
+        if ((_snapshot == nSnapshots)&&(!isConstant)) createSnapshot();
 
-        SSToken childToken = tokenFactory.createChildToken(this, _snapshot, _childTokenName, _childDecimalUnits, _childTokenSymbol);
+        SSToken childToken = tokenFactory.createChildToken(this, _snapshot, _childTokenName, _childDecimalUnits, _childTokenSymbol, _isConstant);
         NewChildToken(_snapshot, childToken);
     }
 
     function createTokens(address _dest, uint _value) onlyOwner {
+        if (isConstant) throw;
         totalSupplyAt[nSnapshots] += _value;
         var previousBalanceTo = balanceOfAt(_dest, nSnapshots);
         updateBalance(_dest, previousBalanceTo + _value);
@@ -176,15 +184,15 @@ contract SSToken is Owned {
 }
 
 contract SSTokenFactory {
-
     function createChildToken(
         address _parentToken,
         uint _snapshot,
         string _tokenName,
         uint8 _decimalUnits,
-        string _tokenSymbol
+        string _tokenSymbol,
+        bool _isConstant
     ) returns (SSToken) {
-        SSToken newToken = new SSToken(this, _parentToken, _snapshot, _tokenName, _decimalUnits, _tokenSymbol);
+        SSToken newToken = new SSToken(this, _parentToken, _snapshot, _tokenName, _decimalUnits, _tokenSymbol, _isConstant);
         return newToken;
     }
 }
