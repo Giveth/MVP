@@ -56,6 +56,7 @@ contract TokenCreation {
     function seal() {
         if (now < endFundingTime) throw;
         tokenContract.seal();
+        suicide(vaultContract);
     }
 
 }
