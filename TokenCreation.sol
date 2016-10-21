@@ -1,73 +1,37 @@
 pragma solidity ^0.4.0;
 
-contract SSToken {
-    function createTokens(address _dest, uint _value) {}
-    function changeOwner(address _newOwner) {}
-    function owner() constant returns (address) {}
-}
+import "CharityToken.sol";
 
 contract TokenCreation {
-
-    address public escapeCaller;
-    address public escapeDestination;
 
     uint public startFundingTime;
     uint public endFundingTime;
 
-    uint public minimumFunding;
     uint public maximumFuning;
 
     uint public totalCollected;
 
-    SSToken public tokenContract;
-    address public fundingContract;
-
-
-    mapping (address => uint256) public weiGiven;
-    bool public funded;
-
+    CharityToken public tokenContract;
+    address public vaultContract;
 
     function TokenCreation(
-        address _escapeCaller,
-        address _escapeDestination,
         uint _startFundingTime,
         uint _endFundingTime,
-        uint _minimumFunding,
         uint _maximumFunding,
-        address _tokenContract,
-        address _fundingContract
+        address _vaultContract
     ) {
         if ((_startFundingTime < now) ||
+            (_endFundingTime < now) ||
             (_endFundingTime <= _startFundingTime) ||
-            (_maximumFunding < _minimumFunding) ||
             (_maximumFunding > 1000000 ether) ||
-            (_tokenContract == 0) ||
-            (fundingContract == 0))
+            (vaultContract == 0))
             throw;
-        escapeCaller = _escapeCaller;
-        escapeDestination = _escapeDestination;
         startFundingTime = _startFundingTime;
         endFundingTime = _endFundingTime;
-        minimumFunding = _minimumFunding;
         maximumFuning = _maximumFunding;
-        tokenContract = SSToken(_tokenContract);
-        fundingContract = _fundingContract;
-
-        if (tokenContract.owner() != address(this)) throw;
+        tokenContract = new CharityToken ();
+        vaultContract = _vaultContract;
     }
-
-
-    /// Last Resort call, to allow for a reaction if something bad happens to
-    /// the contract or if some security issue is uncovered.
-    function escapeHatch() {
-        if (msg.sender != escapeCaller) throw;
-        uint total = this.balance;
-        if (!escapeDestination.send(total)) {
-            throw;
-        }
-        EscapeCalled(total);
-    }
-
 
     function ()  payable {
         proxyPayment(msg.sender);
@@ -76,58 +40,22 @@ contract TokenCreation {
 
     function proxyPayment(address _owner) payable {
 
-        uint toFund;
-        uint toReturn;
-
         if ((now<startFundingTime) ||
             (now>endFundingTime) ||
             (totalCollected >= maximumFuning) ||
-            (msg.value == 0))
+            (msg.value == 0) ||
+            (totalCollected + msg.value > maximumFuning))
             throw;
 
-        if (totalCollected + msg.value > maximumFuning) {
-            toFund = maximumFuning -totalCollected;
-            toReturn = totalCollected + msg.value - maximumFuning;
-        } else {
-            toFund = msg.value;
-            toReturn = 0;
-        }
+        totalCollected += maximumFuning;
 
-        weiGiven[_owner] += toFund;
-
-        totalCollected += toFund;
-
-        // If funded, send all the collected ether to the fund
-        if (!funded) {
-            if (totalCollected >= minimumFunding) {
-                funded = true;
-                if (!fundingContract.send(totalCollected)) throw;
-            }
-        } else {
-            if (!fundingContract.send(toFund)) throw;
-        }
-
-        tokenContract.createTokens(_owner, toFund);
-
-        if (toReturn > 0) {
-            if (!msg.sender.send(toReturn)) throw;
-        }
+        if (!vaultContract.send(msg.value)) throw;
+        if (!tokenContract.createTokens(_owner, msg.value)) throw;
     }
 
-
-    function refund() {
+    function seal() {
         if (now < endFundingTime) throw;
-        if (funded) throw;
-        if (weiGiven[msg.sender] == 0) throw;
-        weiGiven[msg.sender] = 0;
-        if (! msg.sender.send(weiGiven[msg.sender])) throw;
+        tokenContract.seal();
     }
 
-    function transferOwnership() {
-        if (now < endFundingTime) throw;
-        tokenContract.changeOwner(fundingContract);
-    }
-
-
-    event EscapeCalled(uint amount);
 }
