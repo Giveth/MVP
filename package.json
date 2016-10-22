@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/CharityDAO/MVP",
   "dependencies": {
-    "ethconnector": "0.0.10"
+    "ethconnector": "0.0.10",
+    "scrypt": "6.0.3"
   }
 }
