@@ -6,7 +6,7 @@
 
 var charityDAOHelper = require('../js/charitydao_helper.js');
 var ethConnector = require('ethconnector');
-var BigNumber = require('bignumber.js');
+//var BigNumber = require('bignumber.js');
 
 
 var assert = require("assert"); // node.js core module

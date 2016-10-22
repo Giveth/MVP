@@ -21,7 +21,7 @@ exports.deploy = function(opts, cb) {
     var compilationResult;
     return async.series([
         function(cb) {
-            ethConnector.loadSol(path.join(__dirname, "../Vault.sol"), function(err, _src) {
+            ethConnector.loadSol(path.join(__dirname, "../wallet.sol"), function(err, _src) {
                 if (err) return cb(err);
                 src = _src;
                 cb();
