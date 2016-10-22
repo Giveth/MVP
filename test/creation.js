@@ -25,8 +25,8 @@ describe('Normal Chaity DAO procedure', function(){
 
 
     before(function(done) {
-//        ethConnector.init('testrpc', done);
-        ethConnector.init('rpc', done);
+        ethConnector.init('testrpc', done);
+//        ethConnector.init('rpc', done);
     });
     it('should deploy all the contracts ', function(done){
         this.timeout(200000000);
