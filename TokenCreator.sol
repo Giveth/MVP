@@ -2,7 +2,7 @@ pragma solidity ^0.4.0;
 
 import "CharityToken.sol";
 
-contract TokenCreator {
+contract TokenCreator is CharityToken {
 
     uint public startFundingTime;
     uint public endFundingTime;
@@ -32,7 +32,7 @@ contract TokenCreator {
         vaultContract = _vaultContract;
     }
 
-    function ()  payable {
+    function () payable {
         proxyPayment(msg.sender);
     }
 
@@ -51,11 +51,4 @@ contract TokenCreator {
         if (!vaultContract.send(msg.value)) throw;
         if (!tokenContract.createTokens(_owner, msg.value)) throw;
     }
-
-    function seal() {
-        if (now < endFundingTime) throw;
-        tokenContract.seal();
-        suicide(vaultContract);
-    }
-
 }

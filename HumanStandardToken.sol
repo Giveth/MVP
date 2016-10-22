@@ -17,11 +17,6 @@ import "StandardToken.sol";
 
 contract HumanStandardToken is StandardToken {
 
-    function () {
-        //if ether is sent to this address, send it back.
-        throw;
-    }
-
     /* Public variables of the token */
 
     /*
