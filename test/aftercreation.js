@@ -18,7 +18,7 @@ var verbose = true;
 
 
 
-describe('Normal Chaity DAO procedure', function(){
+describe('Aftercreation test', function(){
     var vault;
     var tokenCreator;
     var charityToken;
@@ -43,8 +43,8 @@ describe('Normal Chaity DAO procedure', function(){
                 ethConnector.accounts[6]
             ],
             required: 3,
-            startFundngTime: now + 10*60,
-            endFundingTime: now + 20*60,
+            startFundngTime: now - 5*60,
+            endFundingTime: now + 5*60,
             maximumFunding: ethConnector.web3.toWei(15)
         }, function(err, _vault, _tokenCreator, _charityToken) {
             assert.ifError(err);
@@ -57,29 +57,47 @@ describe('Normal Chaity DAO procedure', function(){
             done();
         });
     });
-    it('Should throw if you try to send Ether before creation', function(done) {
-        ethConnector.web3.eth.sendTransaction({
-            to:tokenCreator.address,
-            from: ethConnector.accounts[0],
-            value: ethConnector.web3.toWei(100),
-            gas: 200000},
-            function(err) {
-//                assert(err);
-                done();
-            }
-        );
-    });
-    it('Should delay until creation period can be started', function(done) {
-        bcDelay(60*11, done);
-    });
-    it('Should allow token creation  when creation period start', function(done) {
+    it('Should allow token creation  before closing', function(done) {
         this.timeout(200000000);
         async.series([
             function(cb) {
                 ethConnector.web3.eth.sendTransaction({
                     to:tokenCreator.address,
                     from: ethConnector.accounts[0],
-                    value: ethConnector.web3.toWei(10),
+                    value: ethConnector.web3.toWei(5),
+                    gas: 400000},
+                    function(err) {
+                        assert.ifError(err);
+                        cb();
+                    }
+                );
+            },
+            function(cb) {
+                charityToken.totalSupply(ethConnector.accounts[0], function(err, _totalSupply) {
+                    assert.ifError(err);
+                    assert.equal(ethConnector.web3.fromWei(_totalSupply), 5);
+                    cb();
+                });
+            },
+            function(cb) {
+                charityToken.balanceOf(ethConnector.accounts[0], function(err, _balance) {
+                    assert.ifError(err);
+                    assert.equal(ethConnector.web3.fromWei(_balance), 5);
+                    cb();
+                });
+            }
+        ],function(err) {
+            done();
+        });
+    });
+    it('Should allow token creation  before closing same account', function(done) {
+        this.timeout(200000000);
+        async.series([
+            function(cb) {
+                ethConnector.web3.eth.sendTransaction({
+                    to:tokenCreator.address,
+                    from: ethConnector.accounts[0],
+                    value: ethConnector.web3.toWei(5),
                     gas: 400000},
                     function(err) {
                         assert.ifError(err);
@@ -105,31 +123,14 @@ describe('Normal Chaity DAO procedure', function(){
             done();
         });
     });
-    it('Should not allow over cap', function(done) {
-        this.timeout(200000000);
-        async.series([
-            function(cb) {
-                ethConnector.web3.eth.sendTransaction({
-                    to:tokenCreator.address,
-                    from: ethConnector.accounts[0],
-                    value: ethConnector.web3.toWei(10),
-                    gas: 400000},
-                    function(err) {
-                        assert(err);
-                        cb();
-                    }
-                );
-            },
-        ],done);
-    });
-    it('Should allow to the limit cap', function(done) {
+    it('Should allow token creation  before closing other account', function(done) {
         this.timeout(200000000);
         async.series([
             function(cb) {
                 ethConnector.web3.eth.sendTransaction({
                     to:tokenCreator.address,
                     from: ethConnector.accounts[1],
-                    value: ethConnector.web3.toWei(5),
+                    value: ethConnector.web3.toWei(1),
                     gas: 400000},
                     function(err) {
                         assert.ifError(err);
@@ -138,54 +139,35 @@ describe('Normal Chaity DAO procedure', function(){
                 );
             },
             function(cb) {
-                charityToken.totalSupply(ethConnector.accounts[1], function(err, _totalSupply) {
+                charityToken.totalSupply(ethConnector.accounts[0], function(err, _totalSupply) {
                     assert.ifError(err);
-                    assert.equal(ethConnector.web3.fromWei(_totalSupply), 15);
+                    assert.equal(ethConnector.web3.fromWei(_totalSupply), 11);
                     cb();
                 });
             },
             function(cb) {
                 charityToken.balanceOf(ethConnector.accounts[1], function(err, _balance) {
                     assert.ifError(err);
-                    assert.equal(ethConnector.web3.fromWei(_balance), 5);
+                    assert.equal(ethConnector.web3.fromWei(_balance), 1);
                     cb();
                 });
-            },
-            function(cb) {
-                charityToken.sealed(function(err, res) {
-                    assert.ifError(err);
-                    assert.equal(res,false);
-                    cb();
-                });
-            },
-        ],done);
-    });
-    it('SHould not allow seal before closing creation', function(done) {
-        this.timeout(200000000);
-        async.series([
-            function(cb) {
-                tokenCreator.seal({
-                    from: ethConnector.accounts[0],
-                    gas: 400000},
-                    function(err) {
-                        assert(err);
-                        cb();
-                    }
-                );
             }
-        ],done);
+        ],function(err) {
+            done();
+        });
     });
+
     it('Should delay until closing period', function(done) {
         bcDelay(60*10, done);
     });
-    it('Should not allow to buy tokens after the limit', function(done) {
+    it('Should not allow to buy tokens after the limit (same account)', function(done) {
         this.timeout(200000000);
         async.series([
             function(cb) {
                 ethConnector.web3.eth.sendTransaction({
                     to:tokenCreator.address,
                     from: ethConnector.accounts[0],
-                    value: ethConnector.web3.toWei(5),
+                    value: ethConnector.web3.toWei(1),
                     gas: 400000},
                     function(err) {
                         assert(err);
@@ -195,7 +177,24 @@ describe('Normal Chaity DAO procedure', function(){
             },
         ],done);
     });
-    it('Should seal the token creation', function(done) {
+    it('Should not allow to buy tokens after the limit (different account)', function(done) {
+        this.timeout(200000000);
+        async.series([
+            function(cb) {
+                ethConnector.web3.eth.sendTransaction({
+                    to:tokenCreator.address,
+                    from: ethConnector.accounts[2],
+                    value: ethConnector.web3.toWei(1),
+                    gas: 400000},
+                    function(err) {
+                        assert(err);
+                        cb();
+                    }
+                );
+            },
+        ],done);
+    });
+    it('Should seal token creation', function(done) {
         this.timeout(200000000);
         async.series([
             function(cb) {
@@ -217,14 +216,31 @@ describe('Normal Chaity DAO procedure', function(){
             }
         ],done);
     });
-    it('Should not allow after sealing', function(done) {
+    it('Should not allow to buy tokens after sela (same account)', function(done) {
         this.timeout(200000000);
         async.series([
             function(cb) {
                 ethConnector.web3.eth.sendTransaction({
                     to:tokenCreator.address,
                     from: ethConnector.accounts[0],
-                    value: ethConnector.web3.toWei(5),
+                    value: ethConnector.web3.toWei(1),
+                    gas: 400000},
+                    function(err) {
+                        assert(err);
+                        cb();
+                    }
+                );
+            },
+        ],done);
+    });
+    it('Should not allow to buy tokens after seal (different account)', function(done) {
+        this.timeout(200000000);
+        async.series([
+            function(cb) {
+                ethConnector.web3.eth.sendTransaction({
+                    to:tokenCreator.address,
+                    from: ethConnector.accounts[2],
+                    value: ethConnector.web3.toWei(1),
                     gas: 400000},
                     function(err) {
                         assert(err);

@@ -96,9 +96,9 @@ exports.deploy = function(opts, cb) {
                 });
         },
         function(cb) {
-            tokenCreator.tokenContract(function(err, _tokenCreatorAddr) {
+            tokenCreator.tokenContract(function(err, _tokenContractAddr) {
                 if (err) return cb(err);
-                charityToken = ethConnector.web3.eth.contract(charityTokenAbi).at(_tokenCreatorAddr);
+                charityToken = ethConnector.web3.eth.contract(charityTokenAbi).at(_tokenContractAddr);
                 cb();
             });
         }

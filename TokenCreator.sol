@@ -36,26 +36,32 @@ contract TokenCreator {
         proxyPayment(msg.sender);
     }
 
-
-    function proxyPayment(address _owner) payable {
+    function proxyPayment(address _owner) {
 
         if ((now<startFundingTime) ||
             (now>endFundingTime) ||
-            (totalCollected >= maximumFuning) ||
             (msg.value == 0) ||
             (totalCollected + msg.value > maximumFuning))
+        {
             throw;
+        }
 
-        totalCollected += maximumFuning;
+        totalCollected += msg.value;
 
-        if (!vaultContract.send(msg.value)) throw;
-        if (!tokenContract.createTokens(_owner, msg.value)) throw;
+        if (!vaultContract.send(msg.value)) {
+            throw;
+        }
+
+        if (!tokenContract.createTokens(_owner, msg.value)) {
+            throw;
+        }
+
+        return;
     }
 
     function seal() {
         if (now < endFundingTime) throw;
         tokenContract.seal();
-        suicide(vaultContract);
     }
 
 }
