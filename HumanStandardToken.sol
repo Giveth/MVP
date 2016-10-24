@@ -47,8 +47,8 @@ contract HumanStandardToken is StandardToken {
         decimals = _decimalUnits;                            // Amount of decimals for display purposes
         symbol = _tokenSymbol;                               // Set the symbol for display purposes
     }
-
-    /* Approves and then calls the receiving contract */
+/*
+    / * Approves and then calls the receiving contract * /
     function approveAndCall(address _spender, uint256 _value, bytes _extraData) returns (bool success) {
         allowed[msg.sender][_spender] = _value;
         Approval(msg.sender, _spender, _value);
@@ -59,4 +59,5 @@ contract HumanStandardToken is StandardToken {
         if(!_spender.call(bytes4(bytes32(sha3("receiveApproval(address,uint256,address,bytes)"))), msg.sender, _value, this, _extraData)) { throw; }
         return true;
     }
+*/
 }
