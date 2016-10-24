@@ -20,7 +20,7 @@ contract TokenCreator {
         uint _maximumFunding,
         address _vaultContract
     ) {
-        if ((_endFundingTime < now) ||
+        if ((_startFundingTime < now) ||
             (_endFundingTime <= _startFundingTime) ||
             (_maximumFunding > 1000000 ether) ||
             (_vaultContract == 0))
