@@ -47,7 +47,7 @@ contract TokenCreator {
     function proxyPayment(address _owner) {
 // First we check that the Campaign can receive the value being sent to it
         if ((now<startFundingTime) ||
-            (tokenContract.sealed() == true) ||
+            (creator == 0) ||
             (now>endFundingTime) ||
             (msg.value == 0) ||
             (totalCollected + msg.value > maximumFunding))
