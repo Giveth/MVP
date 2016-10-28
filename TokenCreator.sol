@@ -16,7 +16,7 @@ contract TokenCreator {
     CharityToken public tokenContract;  // The new Campaign token
     address public vaultContract;       // The Address to hold the funds donated
 
-// 'TokenCreator()' created the new Campaign Token with the begining and ending 
+// 'TokenCreator()' created the new Campaign Token with the begining and ending
 // Unix times the max funding allowed and the address to hold the donations
 
     function TokenCreator(
@@ -26,7 +26,7 @@ contract TokenCreator {
         address _vaultContract
     ) {
         if ((_endFundingTime < now) ||                //Cannot start in the past
-            (_endFundingTime <= _startFundingTime) || 
+            (_endFundingTime <= _startFundingTime) ||
             (_maximumFunding > 10000 ether) ||        //Can be increased later
             (_vaultContract == 0))                    //To prevent burning ETH
             {
@@ -38,13 +38,17 @@ contract TokenCreator {
         tokenContract = new CharityToken ();
         vaultContract = _vaultContract;
     }
-// Fallback function: when a normal send of ether is made to this contract 
+// Fallback function: when a normal send of ether is made to this contract
 // `proxyPayment()' is called witht he msg.sender as the owner
     function ()  payable {
-        proxyPayment(msg.sender);
+        doPayment(msg.sender);
     }
 
-    function proxyPayment(address _owner) {
+    function proxyPayment(address _owner) payable {
+        doPayment(_owner);
+    }
+
+    function doPayment(address _owner) internal {
 // First we check that the Campaign can receive the value being sent to it
         if ((now<startFundingTime) ||
             (now>endFundingTime) ||
@@ -59,7 +63,7 @@ contract TokenCreator {
         if (!vaultContract.send(msg.value)) {
             throw;
         }
-// Creates an equal amount of Campaign Tokens as ether sent. The Campaign Tokens 
+// Creates an equal amount of Campaign Tokens as ether sent. The Campaign Tokens
 // are created in the address the doner specified (or sent from).
         if (!tokenContract.createTokens(_owner, msg.value)) {
             throw;
