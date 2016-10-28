@@ -39,7 +39,7 @@ contract TokenCreator {
         vaultContract = _vaultContract;
     }
 // Fallback function: when a normal send of ether is made to this contract
-// `proxyPayment()' is called witht he msg.sender as the owner
+// `doPayment()' is called witht he msg.sender as the owner
     function ()  payable {
         doPayment(msg.sender);
     }
