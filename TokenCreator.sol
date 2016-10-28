@@ -33,10 +33,14 @@ contract TokenCreator {
     }
 
     function ()  payable {
-        proxyPayment(msg.sender);
+        doPayment(msg.sender);
     }
 
-    function proxyPayment(address _owner) {
+    function proxyPayment(address _owner) payable {
+        doPayment(_owner);
+    }
+
+    function doPayment(address _owner) internal {
 
         if ((now<startFundingTime) ||
             (now>endFundingTime) ||
