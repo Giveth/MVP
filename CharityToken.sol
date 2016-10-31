@@ -31,7 +31,7 @@ contract CharityToken is HumanStandardToken {
 /// @notice `createTokens()` will create tokens if the campaign has not been 
 /// sealed. 
 /// @dev `createTokens()` is called by the tokenCreator contract when 
-/// someone sends ether to that contract or calls `proxyPayment()`
+/// someone sends ether to that contract or calls `doPayment()`
 /// @param beneficiary The address receiving the tokens 
 /// @param amount The amount of tokens the address is receiving
 /// @return True if tokens are created
