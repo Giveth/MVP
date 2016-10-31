@@ -11,6 +11,7 @@ contract CharityToken is HumanStandardToken {
 
 /// @dev The creator is the address that deployed the CharityToken, for this 
 /// token it will be it will be the TokenCreator Contract  
+
     address public creator;
 
 /// @dev The onlyCreator modifier only allows the creator to call the function
@@ -50,7 +51,6 @@ contract CharityToken is HumanStandardToken {
 /// the tokenCreator contract once
 /// @return True if the Campaign is sealed
 
-
     function seal() onlyCreator returns (bool success)  {
         creator = 0;
         return true;
@@ -62,5 +62,4 @@ contract CharityToken is HumanStandardToken {
     function sealed() constant returns (bool) {
         return creator == 0;
     }
-
 }
