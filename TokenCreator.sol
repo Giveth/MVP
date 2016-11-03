@@ -32,10 +32,11 @@ contract TokenCreator {
         uint _maximumFunding,
         address _vaultContract
     ) {
-        if ((_endFundingTime < now) ||                //Cannot start in the past
+        if ((_endFundingTime < now) ||                // Cannot start in the past
             (_endFundingTime <= _startFundingTime) ||
-            (_maximumFunding > 10000 ether) ||        //The Beta is limited
-            (_vaultContract == 0))                    //To prevent burning ETH
+            (_maximumFunding > 10000 ether) ||        // The Beta is limited
+            (tokenContract.creator == 0) ||           // Extra check
+            (_vaultContract == 0))                    // To prevent burning ETH
             {
             throw;
             }
