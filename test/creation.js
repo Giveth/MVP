@@ -20,8 +20,8 @@ var verbose = true;
 
 describe('Normal Chaity DAO procedure', function(){
     var vault;
-    var tokenCreator;
-    var charityToken;
+    var campaign;
+    var campaignToken;
 
 
     before(function(done) {
@@ -46,20 +46,20 @@ describe('Normal Chaity DAO procedure', function(){
             startFundngTime: now + 10*60,
             endFundingTime: now + 20*60,
             maximumFunding: ethConnector.web3.toWei(15)
-        }, function(err, _vault, _tokenCreator, _charityToken) {
+        }, function(err, _vault, _campaign, _campaignToken) {
             assert.ifError(err);
             assert.ok(_vault.address);
-            assert.ok(_tokenCreator.address);
-            assert.ok(_charityToken.address);
+            assert.ok(_campaign.address);
+            assert.ok(_campaignToken.address);
             vault = _vault;
-            tokenCreator = _tokenCreator;
-            charityToken = _charityToken;
+            campaign = _campaign;
+            campaignToken = _campaignToken;
             done();
         });
     });
     it('Should throw if you try to send Ether before creation', function(done) {
         ethConnector.web3.eth.sendTransaction({
-            to:tokenCreator.address,
+            to:campaign.address,
             from: ethConnector.accounts[0],
             value: ethConnector.web3.toWei(100),
             gas: 200000},
@@ -77,7 +77,7 @@ describe('Normal Chaity DAO procedure', function(){
         async.series([
             function(cb) {
                 ethConnector.web3.eth.sendTransaction({
-                    to:tokenCreator.address,
+                    to:campaign.address,
                     from: ethConnector.accounts[0],
                     value: ethConnector.web3.toWei(10),
                     gas: 400000},
@@ -88,14 +88,14 @@ describe('Normal Chaity DAO procedure', function(){
                 );
             },
             function(cb) {
-                charityToken.totalSupply(ethConnector.accounts[0], function(err, _totalSupply) {
+                campaignToken.totalSupply(ethConnector.accounts[0], function(err, _totalSupply) {
                     assert.ifError(err);
                     assert.equal(ethConnector.web3.fromWei(_totalSupply), 10);
                     cb();
                 });
             },
             function(cb) {
-                charityToken.balanceOf(ethConnector.accounts[0], function(err, _balance) {
+                campaignToken.balanceOf(ethConnector.accounts[0], function(err, _balance) {
                     assert.ifError(err);
                     assert.equal(ethConnector.web3.fromWei(_balance), 10);
                     cb();
@@ -110,7 +110,7 @@ describe('Normal Chaity DAO procedure', function(){
         async.series([
             function(cb) {
                 ethConnector.web3.eth.sendTransaction({
-                    to:tokenCreator.address,
+                    to:campaign.address,
                     from: ethConnector.accounts[0],
                     value: ethConnector.web3.toWei(10),
                     gas: 400000},
@@ -127,7 +127,7 @@ describe('Normal Chaity DAO procedure', function(){
         async.series([
             function(cb) {
                 ethConnector.web3.eth.sendTransaction({
-                    to:tokenCreator.address,
+                    to:campaign.address,
                     from: ethConnector.accounts[1],
                     value: ethConnector.web3.toWei(5),
                     gas: 400000},
@@ -138,21 +138,21 @@ describe('Normal Chaity DAO procedure', function(){
                 );
             },
             function(cb) {
-                charityToken.totalSupply(ethConnector.accounts[1], function(err, _totalSupply) {
+                campaignToken.totalSupply(ethConnector.accounts[1], function(err, _totalSupply) {
                     assert.ifError(err);
                     assert.equal(ethConnector.web3.fromWei(_totalSupply), 15);
                     cb();
                 });
             },
             function(cb) {
-                charityToken.balanceOf(ethConnector.accounts[1], function(err, _balance) {
+                campaignToken.balanceOf(ethConnector.accounts[1], function(err, _balance) {
                     assert.ifError(err);
                     assert.equal(ethConnector.web3.fromWei(_balance), 5);
                     cb();
                 });
             },
             function(cb) {
-                charityToken.sealed(function(err, res) {
+                campaignToken.sealed(function(err, res) {
                     assert.ifError(err);
                     assert.equal(res,false);
                     cb();
@@ -164,7 +164,7 @@ describe('Normal Chaity DAO procedure', function(){
         this.timeout(200000000);
         async.series([
             function(cb) {
-                tokenCreator.seal({
+                campaign.seal({
                     from: ethConnector.accounts[0],
                     gas: 400000},
                     function(err) {
@@ -183,7 +183,7 @@ describe('Normal Chaity DAO procedure', function(){
         async.series([
             function(cb) {
                 ethConnector.web3.eth.sendTransaction({
-                    to:tokenCreator.address,
+                    to:campaign.address,
                     from: ethConnector.accounts[0],
                     value: ethConnector.web3.toWei(5),
                     gas: 400000},
@@ -199,7 +199,7 @@ describe('Normal Chaity DAO procedure', function(){
         this.timeout(200000000);
         async.series([
             function(cb) {
-                tokenCreator.seal({
+                campaign.seal({
                     from: ethConnector.accounts[0],
                     gas: 400000},
                     function(err) {
@@ -209,7 +209,7 @@ describe('Normal Chaity DAO procedure', function(){
                 );
             },
             function(cb) {
-                charityToken.sealed(function(err, res) {
+                campaignToken.sealed(function(err, res) {
                     assert.ifError(err);
                     assert.equal(res,true);
                     cb();
@@ -222,7 +222,7 @@ describe('Normal Chaity DAO procedure', function(){
         async.series([
             function(cb) {
                 ethConnector.web3.eth.sendTransaction({
-                    to:tokenCreator.address,
+                    to:campaign.address,
                     from: ethConnector.accounts[0],
                     value: ethConnector.web3.toWei(5),
                     gas: 400000},

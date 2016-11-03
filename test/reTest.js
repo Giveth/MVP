@@ -27,8 +27,8 @@ function getRandomAcc(min, max) {
 
 describe('Normal Chaity DAO procedure', function(){
     var vault;
-    var tokenCreator;
-    var charityToken;
+    var campaign;
+    var campaignToken;
     before(function(done) {
         ethConnector.init('testrpc', done);
     });
@@ -49,15 +49,15 @@ describe('Normal Chaity DAO procedure', function(){
             startFundngTime: now  ,
             endFundingTime: now + 20,
             maximumFunding: 1001
-        }, function(err, _vault, _tokenCreator, _charityToken) {
+        }, function(err, _vault, _campaign, _campaignToken) {
             assert.ifError(err);
             assert.ok(_vault.address);
-            assert.ok(_tokenCreator.address);
-            assert.ok(_charityToken.address);
+            assert.ok(_campaign.address);
+            assert.ok(_campaignToken.address);
             vault = _vault;
-            tokenCreator = _tokenCreator;
-            charityToken = _charityToken;
-            ConfirmationNeeded = vault.ConfirmationNeeded()
+            campaign = _campaign;
+            campaignToken = _campaignToken;
+            ConfirmationNeeded = vault.ConfirmationNeeded();
 
             done();
         });
@@ -68,17 +68,17 @@ describe('Normal Chaity DAO procedure', function(){
         var buyer = getRandomAcc(0, 9);
         async.series([
             function(cb) {
-                charityToken.balanceOf(ethConnector.accounts[buyer],{from:ethConnector.accounts[buyer]}, cb);
-            }, function(cb) { 
-                tokenCreator.proxyPayment(ethConnector.accounts[buyer], {from:ethConnector.accounts[buyer], value:1000}, cb);
+                campaignToken.balanceOf(ethConnector.accounts[buyer],{from:ethConnector.accounts[buyer]}, cb);
             }, function(cb) {
-                charityToken.balanceOf(ethConnector.accounts[buyer],{from:ethConnector.accounts[buyer]}, cb);
+                campaign.proxyPayment(ethConnector.accounts[buyer], {from:ethConnector.accounts[buyer], value:1000}, cb);
+            }, function(cb) {
+                campaignToken.balanceOf(ethConnector.accounts[buyer],{from:ethConnector.accounts[buyer]}, cb);
             }] , function(err, results ) {
                 assert.ifError(err);
                 var oldBal = new BigNumber(results[0]);
                 var newBal = new BigNumber(results[2]);
-                expectDiffToBe(newBal, oldBal, 1000, "failed to incrases token balance")
-                done()
+                expectDiffToBe(newBal, oldBal, 1000, "failed to incrases token balance");
+                done();
             });
     });
 
@@ -87,19 +87,20 @@ describe('Normal Chaity DAO procedure', function(){
         var buyer = getRandomAcc(0, 9);
         async.series([
             function(cb) {
-                charityToken.balanceOf(ethConnector.accounts[buyer],{from:ethConnector.accounts[buyer]}, cb);
+                campaignToken.balanceOf(ethConnector.accounts[buyer],{from:ethConnector.accounts[buyer]}, cb);
             }, function(cb) {
-                tokenCreator.proxyPayment(ethConnector.accounts[buyer], {from:ethConnector.accounts[buyer], value:2}, cb);
+                campaign.proxyPayment(ethConnector.accounts[buyer], {from:ethConnector.accounts[buyer], value:2}, cb);
             }, function(cb) {
-                charityToken.balanceOf(ethConnector.accounts[buyer],{from:ethConnector.accounts[buyer]}, cb);
+                campaignToken.balanceOf(ethConnector.accounts[buyer],{from:ethConnector.accounts[buyer]}, cb);
             }] , function(err, results ) {
                 assert.equal(err,throwError, "Should throw we sold all the tokens");
-                done()
+                done();
             });
     });
 
     it('Timeout function, should fail to allow for after deadline tests', function (done) {
-        this.timeout(8000);
+        this.timeout(30000);
+        setTimeout(done, 20000);
     });
 
     it('Fail to mine block due to deadline passed', function (done) {
@@ -107,14 +108,14 @@ describe('Normal Chaity DAO procedure', function(){
         var buyer = getRandomAcc(0, 9);
         async.series([
             function(cb) {
-                charityToken.balanceOf(ethConnector.accounts[buyer],{from:ethConnector.accounts[buyer]}, cb);
+                campaignToken.balanceOf(ethConnector.accounts[buyer],{from:ethConnector.accounts[buyer]}, cb);
             }, function(cb) {
-                tokenCreator.proxyPayment(ethConnector.accounts[buyer], {from:ethConnector.accounts[buyer], value:1}, cb);
+                campaign.proxyPayment(ethConnector.accounts[buyer], {from:ethConnector.accounts[buyer], value:1}, cb);
             }, function(cb) {
-                charityToken.balanceOf(ethConnector.accounts[buyer],{from:ethConnector.accounts[buyer]}, cb);
+                campaignToken.balanceOf(ethConnector.accounts[buyer],{from:ethConnector.accounts[buyer]}, cb);
             }] , function(err, results ) {
                 assert.equal(err,throwError, "Should throw deadline is passed");
-                done()
+                done();
             });
     });
 
@@ -122,16 +123,16 @@ describe('Normal Chaity DAO procedure', function(){
         this.timeout(2000);
         async.series([
             function(cb) {
-                charityToken.sealed({from:ethConnector.accounts[0]}, cb);
+                campaignToken.sealed({from:ethConnector.accounts[0]}, cb);
             }, function(cb) {
-                tokenCreator.seal({from:ethConnector.accounts[0]}, cb);
+                campaign.seal({from:ethConnector.accounts[0]}, cb);
             }, function(cb) {
-                charityToken.sealed({from:ethConnector.accounts[0]}, cb);
+                campaignToken.sealed({from:ethConnector.accounts[0]}, cb);
             }] , function(err, results) {
                 assert.ifError(err);
                 assert(!results[0], "charityToken shoudl not be sealed");
                 assert(results[2], "charityToken seal failed");
-                done()
+                done();
             });
     });
 });

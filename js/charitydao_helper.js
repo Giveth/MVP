@@ -8,10 +8,10 @@ var path = require('path');
 
 var vaultAbi;
 var vault;
-var tokenCreatorAbi;
-var tokenCreator;
-var charityTokenAbi;
-var charityToken;
+var campaignAbi;
+var campaign;
+var campaignTokenAbi;
+var campaignToken;
 
 
 var src;
@@ -58,7 +58,7 @@ exports.deploy = function(opts, cb) {
         },
 
         function(cb) {
-            ethConnector.loadSol(path.join(__dirname, "../TokenCreator.sol"), function(err, _src) {
+            ethConnector.loadSol(path.join(__dirname, "../Campaign.sol"), function(err, _src) {
                 if (err) return cb(err);
                 src = _src;
                 cb();
@@ -79,31 +79,31 @@ exports.deploy = function(opts, cb) {
             });
         },
         function(cb) {
-            tokenCreatorAbi = JSON.parse(compilationResult.TokenCreator.interface);
-            charityTokenAbi = JSON.parse(compilationResult.CharityToken.interface);
-            ethConnector.deploy(compilationResult.TokenCreator.interface,
-                compilationResult.TokenCreator.bytecode,
+            campaignAbi = JSON.parse(compilationResult.Campaign.interface);
+            campaignTokenAbi = JSON.parse(compilationResult.CampaignToken.interface);
+            ethConnector.deploy(compilationResult.Campaign.interface,
+                compilationResult.Campaign.bytecode,
                 0,
                 0,
                 opts.startFundngTime,
                 opts.endFundingTime,
                 opts.maximumFunding,
                 vault.address,
-                function(err, _tokenCreator) {
+                function(err, _campaign) {
                     if (err) return cb(err);
-                    tokenCreator = _tokenCreator;
+                    campaign = _campaign;
                     cb();
                 });
         },
         function(cb) {
-            tokenCreator.tokenContract(function(err, _tokenContractAddr) {
+            campaign.tokenContract(function(err, _tokenContractAddr) {
                 if (err) return cb(err);
-                charityToken = ethConnector.web3.eth.contract(charityTokenAbi).at(_tokenContractAddr);
+                campaignToken = ethConnector.web3.eth.contract(campaignTokenAbi).at(_tokenContractAddr);
                 cb();
             });
         }
     ], function(err) {
         if (err) return cb(err);
-        cb(null,vault, tokenCreator, charityToken, compilationResult);
+        cb(null,vault, campaign, campaignToken, compilationResult);
     });
 };

@@ -20,8 +20,8 @@ var verbose = true;
 
 describe('Aftercreation test', function(){
     var vault;
-    var tokenCreator;
-    var charityToken;
+    var campaign;
+    var campaignToken;
 
 
     before(function(done) {
@@ -46,14 +46,14 @@ describe('Aftercreation test', function(){
             startFundngTime: now - 5*60,
             endFundingTime: now + 5*60,
             maximumFunding: ethConnector.web3.toWei(15)
-        }, function(err, _vault, _tokenCreator, _charityToken) {
+        }, function(err, _vault, _campaign, _campaignToken) {
             assert.ifError(err);
             assert.ok(_vault.address);
-            assert.ok(_tokenCreator.address);
-            assert.ok(_charityToken.address);
+            assert.ok(_campaign.address);
+            assert.ok(_campaignToken.address);
             vault = _vault;
-            tokenCreator = _tokenCreator;
-            charityToken = _charityToken;
+            campaign = _campaign;
+            campaignToken = _campaignToken;
             done();
         });
     });
@@ -62,7 +62,7 @@ describe('Aftercreation test', function(){
         async.series([
             function(cb) {
                 ethConnector.web3.eth.sendTransaction({
-                    to:tokenCreator.address,
+                    to:campaign.address,
                     from: ethConnector.accounts[0],
                     value: ethConnector.web3.toWei(5),
                     gas: 400000},
@@ -73,14 +73,14 @@ describe('Aftercreation test', function(){
                 );
             },
             function(cb) {
-                charityToken.totalSupply(ethConnector.accounts[0], function(err, _totalSupply) {
+                campaignToken.totalSupply(ethConnector.accounts[0], function(err, _totalSupply) {
                     assert.ifError(err);
                     assert.equal(ethConnector.web3.fromWei(_totalSupply), 5);
                     cb();
                 });
             },
             function(cb) {
-                charityToken.balanceOf(ethConnector.accounts[0], function(err, _balance) {
+                campaignToken.balanceOf(ethConnector.accounts[0], function(err, _balance) {
                     assert.ifError(err);
                     assert.equal(ethConnector.web3.fromWei(_balance), 5);
                     cb();
@@ -95,7 +95,7 @@ describe('Aftercreation test', function(){
         async.series([
             function(cb) {
                 ethConnector.web3.eth.sendTransaction({
-                    to:tokenCreator.address,
+                    to:campaign.address,
                     from: ethConnector.accounts[0],
                     value: ethConnector.web3.toWei(5),
                     gas: 400000},
@@ -106,14 +106,14 @@ describe('Aftercreation test', function(){
                 );
             },
             function(cb) {
-                charityToken.totalSupply(ethConnector.accounts[0], function(err, _totalSupply) {
+                campaignToken.totalSupply(ethConnector.accounts[0], function(err, _totalSupply) {
                     assert.ifError(err);
                     assert.equal(ethConnector.web3.fromWei(_totalSupply), 10);
                     cb();
                 });
             },
             function(cb) {
-                charityToken.balanceOf(ethConnector.accounts[0], function(err, _balance) {
+                campaignToken.balanceOf(ethConnector.accounts[0], function(err, _balance) {
                     assert.ifError(err);
                     assert.equal(ethConnector.web3.fromWei(_balance), 10);
                     cb();
@@ -128,7 +128,7 @@ describe('Aftercreation test', function(){
         async.series([
             function(cb) {
                 ethConnector.web3.eth.sendTransaction({
-                    to:tokenCreator.address,
+                    to:campaign.address,
                     from: ethConnector.accounts[1],
                     value: ethConnector.web3.toWei(1),
                     gas: 400000},
@@ -139,14 +139,14 @@ describe('Aftercreation test', function(){
                 );
             },
             function(cb) {
-                charityToken.totalSupply(ethConnector.accounts[0], function(err, _totalSupply) {
+                campaignToken.totalSupply(ethConnector.accounts[0], function(err, _totalSupply) {
                     assert.ifError(err);
                     assert.equal(ethConnector.web3.fromWei(_totalSupply), 11);
                     cb();
                 });
             },
             function(cb) {
-                charityToken.balanceOf(ethConnector.accounts[1], function(err, _balance) {
+                campaignToken.balanceOf(ethConnector.accounts[1], function(err, _balance) {
                     assert.ifError(err);
                     assert.equal(ethConnector.web3.fromWei(_balance), 1);
                     cb();
@@ -165,7 +165,7 @@ describe('Aftercreation test', function(){
         async.series([
             function(cb) {
                 ethConnector.web3.eth.sendTransaction({
-                    to:tokenCreator.address,
+                    to:campaign.address,
                     from: ethConnector.accounts[0],
                     value: ethConnector.web3.toWei(1),
                     gas: 400000},
@@ -182,7 +182,7 @@ describe('Aftercreation test', function(){
         async.series([
             function(cb) {
                 ethConnector.web3.eth.sendTransaction({
-                    to:tokenCreator.address,
+                    to:campaign.address,
                     from: ethConnector.accounts[2],
                     value: ethConnector.web3.toWei(1),
                     gas: 400000},
@@ -198,7 +198,7 @@ describe('Aftercreation test', function(){
         this.timeout(200000000);
         async.series([
             function(cb) {
-                tokenCreator.seal({
+                campaign.seal({
                     from: ethConnector.accounts[0],
                     gas: 400000},
                     function(err) {
@@ -208,7 +208,7 @@ describe('Aftercreation test', function(){
                 );
             },
             function(cb) {
-                charityToken.sealed(function(err, res) {
+                campaignToken.sealed(function(err, res) {
                     assert.ifError(err);
                     assert.equal(res,true);
                     cb();
@@ -221,7 +221,7 @@ describe('Aftercreation test', function(){
         async.series([
             function(cb) {
                 ethConnector.web3.eth.sendTransaction({
-                    to:tokenCreator.address,
+                    to:campaign.address,
                     from: ethConnector.accounts[0],
                     value: ethConnector.web3.toWei(1),
                     gas: 400000},
@@ -238,7 +238,7 @@ describe('Aftercreation test', function(){
         async.series([
             function(cb) {
                 ethConnector.web3.eth.sendTransaction({
-                    to:tokenCreator.address,
+                    to:campaign.address,
                     from: ethConnector.accounts[2],
                     value: ethConnector.web3.toWei(1),
                     gas: 400000},
