@@ -4,7 +4,7 @@
 
 
 
-var charityDAOHelper = require('../js/charitydao_helper.js');
+var campaignHelper = require('../js/campaign_helper.js');
 var ethConnector = require('ethconnector');
 var BigNumber = require('bignumber.js');
 
@@ -32,7 +32,7 @@ describe('Aftercreation test', function(){
         this.timeout(200000000);
         var now = Math.floor(new Date().getTime() /1000);
 
-        charityDAOHelper.deploy({
+        campaignHelper.deploy({
             owners: [
                 ethConnector.accounts[0],
                 ethConnector.accounts[1],

@@ -2,7 +2,7 @@
 /*global describe, it, before, beforeEach, after, afterEach */
 "use strict";
 
-var charityDAOHelper = require('../js/charitydao_helper.js');
+var campaignHelper = require('../js/campaign_helper.js');
 var ethConnector = require('ethconnector');
 var BigNumber = require('bignumber.js');
 
@@ -25,7 +25,7 @@ function getRandomAcc(min, max) {
 }
 
 
-describe('Normal Chaity DAO procedure', function(){
+describe('Normal Campaign creation procedure', function(){
     var vault;
     var campaign;
     var campaignToken;
@@ -35,7 +35,7 @@ describe('Normal Chaity DAO procedure', function(){
     it('should deploy all the contracts ', function(done){
         this.timeout(200000000);
         var now = Math.floor(new Date().getTime() /1000);
-        charityDAOHelper.deploy({
+        campaignHelper.deploy({
             owners: [
                 ethConnector.accounts[0],
                 ethConnector.accounts[1],

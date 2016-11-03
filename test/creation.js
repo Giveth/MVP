@@ -4,7 +4,7 @@
 
 
 
-var charityDAOHelper = require('../js/charitydao_helper.js');
+var campaignHelper = require('../js/campaign_helper.js');
 var ethConnector = require('ethconnector');
 var BigNumber = require('bignumber.js');
 
@@ -18,7 +18,7 @@ var verbose = true;
 
 
 
-describe('Normal Chaity DAO procedure', function(){
+describe('Normal Campaign procedure', function(){
     var vault;
     var campaign;
     var campaignToken;
@@ -32,7 +32,7 @@ describe('Normal Chaity DAO procedure', function(){
         this.timeout(200000000);
         var now = Math.floor(new Date().getTime() /1000);
 
-        charityDAOHelper.deploy({
+        campaignHelper.deploy({
             owners: [
                 ethConnector.accounts[0],
                 ethConnector.accounts[1],
