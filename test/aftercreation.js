@@ -73,7 +73,7 @@ describe('Aftercreation test', function(){
                 );
             },
             function(cb) {
-                campaignToken.totalSupply(ethConnector.accounts[0], function(err, _totalSupply) {
+                campaignToken.totalSupply(function(err, _totalSupply) {
                     assert.ifError(err);
                     assert.equal(ethConnector.web3.fromWei(_totalSupply), 5);
                     cb();
@@ -106,7 +106,7 @@ describe('Aftercreation test', function(){
                 );
             },
             function(cb) {
-                campaignToken.totalSupply(ethConnector.accounts[0], function(err, _totalSupply) {
+                campaignToken.totalSupply(function(err, _totalSupply) {
                     assert.ifError(err);
                     assert.equal(ethConnector.web3.fromWei(_totalSupply), 10);
                     cb();
@@ -139,7 +139,7 @@ describe('Aftercreation test', function(){
                 );
             },
             function(cb) {
-                campaignToken.totalSupply(ethConnector.accounts[0], function(err, _totalSupply) {
+                campaignToken.totalSupply( function(err, _totalSupply) {
                     assert.ifError(err);
                     assert.equal(ethConnector.web3.fromWei(_totalSupply), 11);
                     cb();

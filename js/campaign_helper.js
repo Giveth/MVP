@@ -4,6 +4,7 @@
 var async = require('async');
 var ethConnector = require('ethconnector');
 var path = require('path');
+var _ = require('lodash');
 
 
 var vaultAbi;
@@ -74,7 +75,7 @@ exports.deploy = function(opts, cb) {
         function(cb) {
             ethConnector.compile(src, function(err, result) {
                 if (err) return cb(err);
-                compilationResult = result;
+                compilationResult = _.extend(result, compilationResult);
                 cb();
             });
         },
