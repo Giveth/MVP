@@ -19,7 +19,7 @@ var src;
 
 
 exports.deploy = function(opts, cb) {
-    var compilationResult;
+    var compilationResult = {};
     return async.series([
         function(cb) {
             ethConnector.loadSol(path.join(__dirname, "../wallet.sol"), function(err, _src) {
@@ -36,9 +36,10 @@ exports.deploy = function(opts, cb) {
             });
         },
         function(cb) {
+            compilationResult.srcWallet = src;
             ethConnector.compile(src, function(err, result) {
                 if (err) return cb(err);
-                compilationResult = result;
+                compilationResult = _.extend(result, compilationResult);
                 cb();
             });
         },
@@ -73,6 +74,7 @@ exports.deploy = function(opts, cb) {
             });
         },
         function(cb) {
+            compilationResult.srcCampaign = src;
             ethConnector.compile(src, function(err, result) {
                 if (err) return cb(err);
                 compilationResult = _.extend(result, compilationResult);

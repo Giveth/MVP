@@ -19,15 +19,16 @@ ethConnector.init('rpc', function(err) {
 
     campaignHelper.deploy({
         owners: [
-            "0x07f102dd63c1c9837a5994207757958288194694",   // Griff 1
-            "0xd1db5d91666d0fa41da7ad64a2e51f8866481f84",   // Griff 2
-            "0x1f1af2ae02d008efeeeefa85d302462101b31b0d",   // Jordi 1
-            "0x6ce69c47d2e8d1f1fd2a3b5f1c87853ac276dc33"    // Jordi 2
+            "0xC2d9F9c9dD6f76784a8f56f936953b6661A12da8",   // AP
+            "0x6b42907e8eee04eb419ba99c8dda8cc3b8e1a504",   // BW
+            "0x839395e20bbb182fa440d08f850e6c7a8f6f0780",   // Griff
+            "0x82aEB1D8939f514318449fa8Ec704A94DC16E01D",   // Gian
+            "0x1dba1131000664b884a1ba238464159892252d3a"    // Jordi
         ],
         required: 2,
         startFundngTime: now - 5*60,
-        endFundingTime: now + 1800,
-        maximumFunding: ethConnector.web3.toWei(100)
+        endFundingTime: now + 86400*120,
+        maximumFunding: ethConnector.web3.toWei(10000)
     }, function(err, _vault, _campaign, _campaignToken, _compilationResult) {
         if (err) {
             console.log("ERROR deploying: " + err);
@@ -38,8 +39,17 @@ ethConnector.init('rpc', function(err) {
         console.log("campaign address: " + _campaign.address);
         console.log("campaign token address: " + _campaignToken.address);
 
-
-        saveFile(_vault, _campaign, _campaignToken, _compilationResult, function(err) {
+        async.series([
+            function(cb) {
+                fs.writeFile('vault_deployed.sol', _compilationResult.srcWallet, cb);
+            },
+            function(cb) {
+                fs.writeFile('campaign_deployed.sol', _compilationResult.srcCampaign, cb);
+            },
+            function(cb) {
+                saveFile(_vault, _campaign, _campaignToken, _compilationResult, cb);
+            }
+        ], function(err) {
             if (err) {
                 console.log("ERROR writing file: " + err);
                 process.exit(1);
