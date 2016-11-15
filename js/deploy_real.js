@@ -41,7 +41,7 @@ ethConnector.init('rpc', function(err) {
 
         async.series([
             function(cb) {
-                fs.writeFile('vault_deployed.sol', _compilationResult.srcWallet, cb);
+                fs.writeFile('wallet_deployed.sol', _compilationResult.srcWallet, cb);
             },
             function(cb) {
                 fs.writeFile('campaign_deployed.sol', _compilationResult.srcCampaign, cb);
