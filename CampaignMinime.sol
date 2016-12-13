@@ -1,4 +1,4 @@
-pragma solidity ^0.4.4;
+pragma solidity ^0.4.6;
 
 import "MiniMeToken.sol";
 
@@ -36,7 +36,7 @@ contract Campaign is TokenController, Owned {
     uint public maximumFunding;         // In wei
     uint public totalCollected;         // In wei
     MiniMeToken public tokenContract;  // The new token for this Campaign
-    address public vaultContract;       // The address to hold the funds donated
+    address public vaultAddress;       // The address to hold the funds donated
 
 /// @notice 'Campaign()' initiates the Campaign by setting its funding
 /// parameters and creating the deploying the token contract
@@ -47,27 +47,28 @@ contract Campaign is TokenController, Owned {
 /// to receive funds
 /// @param _maximumFunding In wei, the Maximum amount that the Campaign can
 /// receive (currently the max is set at 10,000 ETH for the beta)
-/// @param _vaultContract The address that will store the donated funds
+/// @param _vaultAddress The address that will store the donated funds
+/// @param _tokenAddress Address of the token contract
 
     function Campaign(
         uint _startFundingTime,
         uint _endFundingTime,
         uint _maximumFunding,
-        address _vaultContract,
-        address _tokenContract
+        address _vaultAddress,
+        address _tokenAddress
     ) {
         if ((_endFundingTime < now) ||                // Cannot start in the past
             (_endFundingTime <= _startFundingTime) ||
             (_maximumFunding > 10000 ether) ||        // The Beta is limited
-            (_vaultContract == 0))                    // To prevent burning ETH
+            (_vaultAddress == 0))                    // To prevent burning ETH
             {
             throw;
             }
         startFundingTime = _startFundingTime;
         endFundingTime = _endFundingTime;
         maximumFunding = _maximumFunding;
-        tokenContract = MiniMeToken(_tokenContract); // Deploys the Token Contract
-        vaultContract = _vaultContract;
+        tokenContract = MiniMeToken(_tokenAddress); // Deploys the Token Contract
+        vaultAddress = _vaultAddress;
     }
 
 /// @dev The fallback function is called when ether is sent to the contract, it
@@ -114,7 +115,7 @@ contract Campaign is TokenController, Owned {
 
 
 /// @dev `doPayment()` is an internal function that sends the ether that this
-/// contract receives to the `vaultContract` and creates campaignTokens in the
+/// contract receives to the `vault` and creates campaignTokens in the
 /// address of the `_owner` assuming the Campaign is still accepting funds
 /// @param _owner The address that will hold the newly created CampaignTokens
 
@@ -133,8 +134,8 @@ contract Campaign is TokenController, Owned {
 //Track how much the Campaign has collected
         totalCollected += msg.value;
 
-//Send the ether to the vaultContract
-        if (!vaultContract.send(msg.value)) {
+//Send the ether to the vault
+        if (!vaultAddress.send(msg.value)) {
             throw;
         }
 
@@ -182,6 +183,10 @@ contract Campaign is TokenController, Owned {
             throw;
 
         sealed= true;
+    }
+
+    function setVault(address _newVaultAddress) onlyOwner {
+        vaultAddress = _newVaultAddress;
     }
 
 }
