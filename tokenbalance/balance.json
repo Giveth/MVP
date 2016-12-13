@@ -1,0 +1,27 @@
+[
+  {
+    "account": "0x0072e61047818f2783f0c466b86c3988484c73d3",
+    "amount": "50000000000000000",
+    "type": "A"
+  },
+  {
+    "account": "0x198ef1ec325a96cc354c7266a038be8b5c558f67",
+    "amount": "300000000000000000000",
+    "type": "A"
+  },
+  {
+    "account": "0x33d0edc9d1f0407ed7bdd0637de74cfdd24a56ee",
+    "amount": "100000000000000000",
+    "type": "A"
+  },
+  {
+    "account": "0x839395e20bbb182fa440d08f850e6c7a8f6f0780",
+    "amount": "400000000000000000",
+    "type": "A"
+  },
+  {
+    "account": "0xcb4baa0344065655da9e7d2dde781e5efa25995e",
+    "amount": "50000000000000000",
+    "type": "A"
+  }
+]
