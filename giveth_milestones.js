@@ -17,7 +17,7 @@ var Barry = "0x39cfe11c1321c7b506eb1d967af6ea35dd6ef304";   // BW
 var Griff = "0x839395e20bbb182fa440d08f850e6c7a8f6f0780";   // Griff
 var Gian  = "0x82aEB1D8939f514318449fa8Ec704A94DC16E01D";   // Gian
 var Jordi = "0x1dba1131000664b884a1ba238464159892252d3a";   // Jordi
-var Grace = "";
+var Grace = "0x64A1C14aCF4D3d1F8F0316f6C924Ec8f35a27BCF";
 var MultisigAddy = "0x32bacc8B241FB172fEE18bDa32527126c6f3c5f7";
 var ETHprice = 8.20;
 
@@ -29,21 +29,21 @@ var vault = web3.eth.contract(vaultAbi).at(vaultAddr);
 
 
 var milestones = [{
-        description:"MilestoneTest: A small test for the live net, griff donated this in the first place",
+        description:"Milestone Grace: Testing the Giveth concept through a website. Building brand awareness and reaching to the community. For this simple milestone 5 ether",
         url:"http://www.giveth.io",
         minDoneDate:Math.floor(new Date('2016-01-01').getTime() /1000),
         maxDoneDate:Math.floor(new Date('2017-05-01').getTime() /1000),
-        reviewer:Jordi,
+        reviewer:MultisigAddy,
         reviewTime:86400*7,
         payDestination:vaultAddr,
         payData:vault.authorizePayment.getData(
-            "MilestoneA",
-            Griff,
-            web3.toWei(0.5),
+            "Milestone Website",
+            Grace,
+            web3.toWei(5),
             0
         )
     }, {
-        description:"Milestone B: Developing the basic smart contract architecture for milestone payments, MiniMe Token, and a working vault and deploying them on the Live Net after Thorough Testing - $4000 USD in ETH at the market rate on 12/14/16  at midnight ($8.25) to Jordi Baylina",
+        description:"Milestone Jordi: Developing the basic smart contract architecture for milestone payments, MiniMe Token, and a working vault and deploying them on the Live Net after Thorough Testing - $4000 USD in ETH at the market rate on 12/14/16  at midnight ($8.25) to Jordi Baylina",
         url:"http://www.giveth.io",
         minDoneDate:Math.floor(new Date('2016-01-01').getTime() /1000),
         maxDoneDate:Math.floor(new Date('2017-05-01').getTime() /1000),
@@ -57,7 +57,7 @@ var milestones = [{
             0
         )
     }, {
-        description:"Milestone C: Test the smart contract architecture for milestone payments, MiniMe token, and the vault; review all the code looking for bugs and make the final approval before deploying live on the blockchain: $1000 USD in ETH at the market rate on 12/14/16 at midnight ($8.25) to Barry White",
+        description:"Milestone Barry: Test the smart contract architecture for milestone payments, MiniMe token, and the vault; review all the code looking for bugs and make the final approval before deploying live on the blockchain: $1000 USD in ETH at the market rate on 12/14/16 at midnight ($8.25) to Barry White",
         url:"http://www.giveth.io",
         minDoneDate:Math.floor(new Date('2016-01-01').getTime() /1000),
         maxDoneDate:Math.floor(new Date('2017-05-01').getTime() /1000),
@@ -70,7 +70,7 @@ var milestones = [{
             0
         )
     }, {
-        description:"Milestone D: Promote Giveth and coordinate between all the interested parties and teams; lead the project making sure things get done: a weekly salary of $350 for 32 days ($1600) + Code review, adding descriptive comments, admin, editing ReadMes and doing any thing else needed to support the development $35/hour for 28 hours ($980) + 1 blog post ($150) minus $230 because this was too much money for a charity project that I had a lot of fun working on: Total = $2500 in ETH at the market rate on 12/14/16 at midnight ($8.25) to Griff Green",
+        description:"Milestone Griff: Promote Giveth and coordinate between all the interested parties and teams; lead the project making sure things get done: a weekly salary of $350 for 32 days ($1600) + Code review, adding descriptive comments, admin, editing ReadMes and doing any thing else needed to support the development $35/hour for 28 hours ($980) + 1 blog post ($150) minus $230 because this was too much money for a charity project that I had a lot of fun working on: Total = $2500 in ETH at the market rate on 12/14/16 at midnight ($8.25) to Griff Green",
         url:"http://www.giveth.io",
         minDoneDate:Math.floor(new Date('2016-01-01').getTime() /1000),
         maxDoneDate:Math.floor(new Date('2017-05-01').getTime() /1000),
@@ -89,7 +89,6 @@ var milestones = [{
 
 
 var milestonesBytes = milestoneTrackerHelper.milestones2bytes(milestones);
-
 
 
 
