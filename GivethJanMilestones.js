@@ -4,7 +4,7 @@ var Griff = "0x839395e20bbb182fa440d08f850e6c7a8f6f0780";   // Griff
 var Gian  = "0x82aEB1D8939f514318449fa8Ec704A94DC16E01D";   // Gian
 var Jordi = "0x1dba1131000664b884a1ba238464159892252d3a";   // Jordi
 var Grace = "0x64A1C14aCF4D3d1F8F0316f6C924Ec8f35a27BCF";
-// var Vojtech = ""
+var Vojtech = "0xf9a2595bFAe0694f114042679b3A9a536Bb7A5D8"; //Vojtech
 var MultisigAddy = "0x32bacc8B241FB172fEE18bDa32527126c6f3c5f7";
 var ETHprice = 10;
 
