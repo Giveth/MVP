@@ -136,4 +136,19 @@ var milestonesBytes = milestoneTrackerHelper.milestones2bytes( {
             web3.toWei(2500/ETHprice),
             0
         )
+    }, {
+        description:"Build a new Giveth website. The aim is to have a very clean design similar to https://slock.it but respecting our own brand theme and colours. The work includes analysis of the website requirements, looking at competition, UML modelling (use case, sequence diagrams), designing distinct pages and infographics. We need to link Medium blog as much as their API allows, campaigns, link to the future Giveth UI...",
+        url:"http://www.giveth.io",
+        minDoneDate:Math.floor(new Date('2017-01-01').getTime() /1000),
+        maxDoneDate:Math.floor(new Date('2017-05-01').getTime() /1000),
+        milestoneLeadLink:Vojtech,
+        reviewer:Griff,
+        reviewTime:86400*7,
+        payDestination:vaultAddr,
+        payData:vault.authorizePayment.getData(
+            "Making the website",
+            Vojtech,
+            web3.toWei(3000/ETHprice),
+            0
+        )
     });
