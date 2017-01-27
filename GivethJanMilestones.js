@@ -73,7 +73,7 @@ var milestonesBytes = milestoneTrackerHelper.milestones2bytes( {
         payData:vault.authorizePayment.getData(
             "Griff Making Giveth Happen",
             Griff,
-            web3.toWei(2500/ETHprice),
+            web3.toWei(3333/ETHprice),
             0
         )
     });
