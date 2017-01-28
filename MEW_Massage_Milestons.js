@@ -17,7 +17,7 @@ var vault = web3.eth.contract(vaultAbi).at(vaultAddr);
 
 
 var milestonesBytes = milestoneTrackerHelper.milestones2bytes( {
-        description:"Massage Party for the MEW Team: Find the time to get massages to celebrate a job well done! MEWify is awesome and this Milestone will be paid when it is proven that Taylor, Kosala and Kevin all went and got massages after releasing their incredible MEWify app for the world to use (I recommend Thai massages ;-) ): The donation is 25 ETH and it will be sent to Taylor to cover the massages for everyone and divvy up the left overs :-)",
+        description:"Massage Party for the MEW Team: Find the time to get massages to celebrate a job well done! MEWify is awesome and this Milestone will be paid when it is proven that Taylor, Kosala and Kevin all went and got massages after releasing their incredible MEWify app for the world to use (I recommend Thai massages ;-) ): The donation is 25 ETH and it will be sent to Taylor to cover the massages for everyone and she can divvy up the left overs :-)",
         url:"http://www.giveth.io",
         minDoneDate:Math.floor(new Date('2017-01-01').getTime() /1000),
         maxDoneDate:Math.floor(new Date('2017-06-01').getTime() /1000),
